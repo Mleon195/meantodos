@@ -16,10 +16,43 @@ var TodosComponent = (function () {
         this._todoService = _todoService;
     }
     TodosComponent.prototype.ngOnInit = function () {
+        var _this = this;
         this.todos = [];
         this._todoService.getTodos()
             .subscribe(function (todos) {
-            console.log(todos);
+            _this.todos = todos;
+        });
+    };
+    TodosComponent.prototype.addTodo = function (event, todoText) {
+        var _this = this;
+        var result;
+        var newTodo = {
+            text: todoText.value,
+            isCompleted: false
+        };
+        result = this._todoService.saveTodo(newTodo);
+        result.subscribe(function (x) {
+            _this.todos.push(newTodo);
+            todoText.value = '';
+        });
+    };
+    TodosComponent.prototype.setEditState = function (todo, state) {
+        if (state) {
+            todo.isEditMode = state;
+        }
+        else {
+            delete todo.isEditMode;
+        }
+    };
+    TodosComponent.prototype.updateStatus = function (todo) {
+        var _todo = {
+            _id: todo._id,
+            text: todo.text,
+            isCompleted: !todo.isCompleted
+        };
+        this._todoService.updateTodo(_todo)
+            .subscribe(function (data) {
+            todo.isCompleted = !todo.isCompleted;
         });
     };
     TodosComponent = __decorate([
