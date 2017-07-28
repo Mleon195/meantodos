@@ -58,4 +58,20 @@ export class TodosComponent implements OnInit {
       });
     }
 
+  updateTodoText(event, todo) {
+    if(event.which === 13){
+      todo.text = event.target.value;
+      var _todo = {
+        _id: todo._id,
+        text: todo.text,
+        isCompleted: todo.isComplete
+      };
+
+      this._todoService.updateTodo(_todo)
+        .subscribe(data => {
+          this.setEditState(todo, false);
+        })
+    }
+  }
+
 }
